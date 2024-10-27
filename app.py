@@ -1,9 +1,10 @@
-from flask import Flask, request, send_file, redirect, url_for
+from flask import Flask, request, send_file, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
 from PIL import Image
 import numpy as np
 import os
-import model_predictions
+import backend.model_predictions
+import json
 
 app = Flask(__name__)
 
@@ -42,31 +43,25 @@ def allowed_file(filename):
 
 @app.route('/')
 def index():
-    return send_file('index.html')
+    return render_template('index.html')
 
-@app.route('/send_args')
-def receiveArgs():
-    query = request.args
-    age = query.get("age", None)
-    sex = query.get("sex", None)
-    localization = query.get("localization", None)
-
-    if not age or not sex or not localization:
-        abort(400, {"error": "invalid/missing parameters"})
-    
-
-    results = model_predictions.predict(image_data, age,sex,localization)
-    return send_file('index.html')
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
 
 # Route to handle file upload
 @app.route('/upload_image', methods=['POST'])
 def upload_image():
+    # Extract form fields and file
+    age = request.form.get('age')
+    sex = request.form.get('sex')
+    localization = request.form.get('localization')
+    file = request.files.get('SkinCondition')
+
     # Check if the request contains a file
     if 'SkinCondition' not in request.files:
         return "No file part in the request", 400
 
-    file = request.files['SkinCondition']
-    
     # If no file is selected, redirect to home or show an error
     if file.filename == '':
         return "No selected file", 400
@@ -77,11 +72,28 @@ def upload_image():
         filename = secure_filename(file.filename)
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
-        print(filename)
-        imageToArray(file_path, )
+
+        # data written into text/JSON file
+        data = {
+            'age': age,
+            'sex': sex,
+            'localization': localization,
+            'filename': imageToArray(file_path)
+        }
+
+        # Define a file path for the metadata file (e.g., filename with .json extension)
+        metadata_file_path = os.path.join(app.config['UPLOAD_FOLDER'], f"{filename}_metadata.json")
         
+        # Write metadata to the file
+        with open(metadata_file_path, 'w') as metadata_file:
+            json.dump(data, metadata_file)
+
+        # Build query string with additional form data
+        query_string = f'age={age}&sex={sex}&localization={localization}&filename={filename}'
+        
+
         # Redirect back to main page (can probably change this when we send info into api)
-        return redirect(url_for('index'))
+        return redirect(url_for('index') + '?' + query_string)
     else:
         return "File type not allowed", 400
 
