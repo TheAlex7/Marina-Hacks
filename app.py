@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 
+
 app = Flask(__name__)
 
 @app.route('/')
@@ -11,6 +12,8 @@ def send_Image():
     html_data = request.form["enter_value"]
     return render_template("image.html")
 # request form from id in html file
+
+
 
 
 
