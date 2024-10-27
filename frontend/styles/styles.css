@@ -23,7 +23,7 @@ button {
     position: absolute;
     top: 70%;
     left: 50%;
-    transform: translate(-40%, -50%);
+    transform: translate(-40%, -100%);
     opacity: 100%;
 
 }
