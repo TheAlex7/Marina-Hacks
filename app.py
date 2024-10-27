@@ -1,19 +1,21 @@
-from flask import Flask
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return "Server online! :D"
+    return render_template('index.html')
 
-@app.route('/<name>')
-def print_name(name):
-    return 'Hi, {}'.format(name)
+@app.route("/sendImage", methods=['POST'])
+def send_Image():
+    html_data = request.form["enter_value"]
+    return render_template("image.html")
+# request form from id in html file
 
 
 if __name__  == '__main__':
     # remove debug if app works fine!
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True, port=5000)
 
 """
 Goal: send the image from the frontend to the backend
