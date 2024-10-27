@@ -16,23 +16,38 @@
             </nav>
         </header>
 
-        <!-- <section id="Preview" class="feature-box preview"> -->
+
+            
 
             <div class="image-container">
                 <img src="frontend/Images/NekoArc (29).png" alt="image">
                 <div class="overlay-text">Test for skin condition</div>
                     
                     <!-- requires flask setup for the submit -->
-                    <button class="overlay-button">
+
+                <!-- Form with id for easy access in JavaScript -->
+                <form id="imageForm" action="testoutput.html" method="post" enctype="multipart/form-data">
+
+                    <!-- Label styled to look like a button -->
+                    <label for="fileInput" class="overlay-button" style="cursor: pointer;">
+                        Select Image
+                    </label><br>
+
+                    <!-- Hidden file input -->
+                    <input id="fileInput" type="file" name="SkinCondition" accept="image/*" style="opacity: 0; position: absolute; z-index: -1;" onchange="submitForm()">
+
+                </form>
+            </div>
+
+                    <!-- <button class="overlay-button">
                         <form action="{'testoutput.html'}" method="post">
                             <label for="Input image" class="overlay-button">Select Image</label><br>
-                            <input type="file" name="SkinCondition" accept="image/*" style="opacity: 100; height: 50px;">
+                            <input type="file" name="SkinCondition" accept="image/*" style="opacity: 0; height: 50px;">
                             <input type="submit" value="Submit">
                         </form>
                     </button>
             </div>
-            
-        <!-- </section> -->
+             -->
 
         <section class="feature-box questions">
             <div>Add in questions</div>
@@ -52,7 +67,12 @@
         <h2>If you're feeling sick, find out what might be the problem!</h2>
         <button>This is a button</button>
         
-
+        <script>
+            // JavaScript function to submit form on file selection
+            function submitForm() {
+            document.getElementById("imageForm").submit();
+        }
+        </script>
         
     </body>
 </html>
