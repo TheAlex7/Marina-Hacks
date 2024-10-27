@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 from PIL import Image
 import numpy as np
 import os
-import model_predictions
+import backend.model_predictions
 
 app = Flask(__name__)
 
@@ -44,19 +44,19 @@ def allowed_file(filename):
 def index():
     return send_file('index.html')
 
-@app.route('/send_args')
-def receiveArgs():
-    query = request.args
-    age = query.get("age", None)
-    sex = query.get("sex", None)
-    localization = query.get("localization", None)
+# @app.route('/send_args')
+# def receiveArgs():
+#     query = request.args
+#     age = query.get("age", None)
+#     sex = query.get("sex", None)
+#     localization = query.get("localization", None)
 
-    if not age or not sex or not localization:
-        abort(400, {"error": "invalid/missing parameters"})
+#     if not age or not sex or not localization:
+#         abort(400, {"error": "invalid/missing parameters"})
     
 
-    results = model_predictions.predict(image_data, age,sex,localization)
-    return send_file('index.html')
+#     results = model_predictions.predict(image_data, age,sex,localization)
+#     return send_file('index.html')
 
 # Route to handle file upload
 @app.route('/upload_image', methods=['POST'])
