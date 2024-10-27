@@ -1,4 +1,4 @@
-from flask import Flask, request, send_file, redirect, url_for
+from flask import Flask, request, send_file, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
 import os
 import json
@@ -17,11 +17,11 @@ def allowed_file(filename):
 
 @app.route('/')
 def index():
-    return send_file('index.html')
+    return render_template('index.html')
 
-@app.route('/')
+@app.route('/contact')
 def contact():
-    return send_file('contact.html')
+    return render_template('contact.html')
 
 # Route to handle file upload
 @app.route('/upload_image', methods=['POST'])
