@@ -31,14 +31,29 @@ nav li {
 }
 
 .welcome {
+    position: relative;
     background-image: url("images/medical.png");
     background-size: 100%;
     background-repeat: no-repeat;
-    padding: 25%;
 }
+
+/* Overlay for reducing image opacity */
+.welcome::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5); /* Adjust 0.5 for desired opacity */
+    z-index: 1;
+}
+
 .text {
+    position: relative;
+    z-index: 2;
     text-align: center;
-    color: rgb(0, 0, 0);
+    padding: 25%;
 }
 section div a {
     color: whitesmoke;
@@ -47,23 +62,16 @@ section div a {
 .question {
     background: black;
 }
-.questionText {
-    text-align: center;
-    border: 2px;
-    border-color: white;
-    margin-top: 20px;
-}
 .questionTitle {
+    margin-top: 50px;
     margin-left: 20px;
+    text-align: center;
 }
 
-.contacts {
-    flex-direction: row;
-    display: flex;
-    margin-right: 20px;
-}
-.contacts div {
-    margin: 20px;
+.overlay-button {
+    position: relative;
+    opacity: 100%;
+    background-position: center;
 }
 
 /* footer */
@@ -71,7 +79,6 @@ footer {
     flex-direction: row;
     background: black;
     color: gray;
-    padding: 20px 20px;
     text-align: center;
     font-size: 14px;
 }
