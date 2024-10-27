@@ -20,8 +20,19 @@
 
             <div class="image-container">
                 <img src="Images/NekoArc (29).png" alt="image">
-                <div class="overlay-text">Fill out quote</div>
-                <button class="overlay-button">This is a button</button>
+                <div class="overlay-text">Test for skin condition</div>
+                    
+                    <!-- requires flask setup for the submit -->
+                    <button class="overlay-button">
+                        <form action="{'testoutput.html'}" method="post">
+                            <label for="Input image">Select Image</label>"<br>
+                            <input type="file" name="SkinCondition" accept="image/*"><br>
+                            <input type="submit" value="Submit">
+                        </form>
+                        <!-- <input type="file" name="file" accept="image/*">
+                        <output name="Skin Photo"></output> -->
+                    </button>
+                <!-- <button class="overlay-button" onclick="window.open('file')">Upload Photo</button> -->
             </div>
             
         <!-- </section> -->
@@ -29,6 +40,13 @@
         <section class="feature-box questions">
             <div>Add in questions</div>
             <div>and answers?</div>
+            <div>noodles</div>
+        </section>
+
+        <section class="feature-box questions">
+            <div>poodles</div>
+            <div>no</div>
+            <div>yes</div>
         </section>
 
         <footer>Footer</footer>
