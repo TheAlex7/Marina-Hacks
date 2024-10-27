@@ -1,21 +1,56 @@
-from flask import Flask, render_template, request
-
+from flask import Flask, request, send_file, redirect, url_for
+from werkzeug.utils import secure_filename
+import os
 
 app = Flask(__name__)
 
+# Folder to store uploaded images
+UPLOAD_FOLDER = 'static/uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Allowed extensions for uploads
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return send_file('index.html')
 
-@app.route("/sendImage", methods=['POST'])
-def send_Image():
-    html_data = request.form["enter_value"]
-    return render_template("image.html")
-# request form from id in html file
+@app.route('/<name>')
+def print_name(name):
+    return 'Hi, {}'.format(name)
+
+# Route to handle file upload
+@app.route('/upload_image', methods=['POST'])
+def upload_image():
+    # Check if the request contains a file
+    if 'SkinCondition' not in request.files:
+        return "No file part in the request", 400
+
+    file = request.files['SkinCondition']
+    
+    # If no file is selected, redirect to home or show an error
+    if file.filename == '':
+        return "No selected file", 400
+
+    # Check if the file type is allowed
+    if file and allowed_file(file.filename):
+        # Secure the filename and save it to the UPLOAD_FOLDER
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+        
+        # Redirect back to main page (can probably change this when we send info into api)
+        return redirect(url_for('index'))
+    else:
+        return "File type not allowed", 400
 
 if __name__  == '__main__':
     # remove debug if app works fine!
-    app.run(host='0.0.0.0', debug=True, port=5000)
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    app.run(debug=True)
 
 """
 Goal: send the image from the frontend to the backend
