@@ -13,10 +13,6 @@ def send_Image():
     return render_template("image.html")
 # request form from id in html file
 
-
-
-
-
 if __name__  == '__main__':
     # remove debug if app works fine!
     app.run(host='0.0.0.0', debug=True, port=5000)

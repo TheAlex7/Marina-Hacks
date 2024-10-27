@@ -7,7 +7,7 @@ import os
 imagePath = 'frontend\Images\Medicai.png'
 
 try:
-    img = Image.open(imagePath)
+    img = Image.open(imagePath).convert("RGB")
     filename = os.path.basename(imagePath)
 except FileNotFoundError:
     # Create a new image if file doesn't exist (example)
@@ -16,11 +16,9 @@ except FileNotFoundError:
 
 
 # img.size and .format can get the properties of the image (it shouldn't matter too much..??)
-desiredLength = 28
-desiredWidth = 28
-desiredDimension = (desiredLength, desiredWidth)
+desiredDimension = (28, 28)
 
-#prints the image and show() displays it
+#prints the image and show() 
 img = img.resize(desiredDimension)
 img.show()
 
@@ -31,6 +29,9 @@ savePath = os.path.join(savePath, imagePath)
 print('image saved to: {savePath}')
 
 #convert to an array
-imageArray = np.array(img)
+imageArray = np.asarray(img)
 print(imageArray)
+finalizedArray = imageArray.flatten()
 print("Array:", imageArray.shape)
+print(len(finalizedArray))
+print("Flattened Array Shape:", finalizedArray.shape)  # Should be (height * width * 3,)
