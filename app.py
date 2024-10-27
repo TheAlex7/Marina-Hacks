@@ -1,5 +1,7 @@
 from flask import Flask, request, send_file, redirect, url_for
 from werkzeug.utils import secure_filename
+from PIL import Image
+import numpy as np
 import os
 
 app = Flask(__name__)
@@ -9,18 +11,37 @@ UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Allowed extensions for uploads
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+
+def imageToArray(file_path):
+    print("File reached!")
+    desiredDimension = (28,28)
+    try:
+        img = Image.open(file_path).convert("RGB") 
+    except FileNotFoundError:
+        # Create a new image if file doesn't exist (example)
+        img = Image.new("RGB", (100, 100), color="blue")
+        print("Didn't create image")
+    img = img.resize(desiredDimension)
+    img.show()
+    #convert to an array
+    imageArray = np.asarray(img)
+    finalizedArray = imageArray.flatten()
+    print("Flattened Array Shape:", finalizedArray.shape)  # Should be (height * width * 3,)
+
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+    print('image saved to: {UPLOAD_FOLDER}')
+    print(finalizedArray)
+
+    return finalizedArray
 
 def allowed_file(filename):
+    #checks for valid reqs
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/')
 def index():
     return send_file('index.html')
-
-@app.route('/<name>')
-def print_name(name):
-    return 'Hi, {}'.format(name)
 
 # Route to handle file upload
 @app.route('/upload_image', methods=['POST'])
@@ -41,6 +62,8 @@ def upload_image():
         filename = secure_filename(file.filename)
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
+        print(filename)
+        imageToArray(file_path, )
         
         # Redirect back to main page (can probably change this when we send info into api)
         return redirect(url_for('index'))
