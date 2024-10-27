@@ -1,6 +1,7 @@
 from flask import Flask, request, send_file, redirect, url_for
 from werkzeug.utils import secure_filename
 import os
+import json
 
 app = Flask(__name__)
 
@@ -18,19 +19,23 @@ def allowed_file(filename):
 def index():
     return send_file('index.html')
 
-@app.route('/<name>')
-def print_name(name):
-    return 'Hi, {}'.format(name)
+@app.route('/')
+def contact():
+    return send_file('contact.html')
 
 # Route to handle file upload
 @app.route('/upload_image', methods=['POST'])
 def upload_image():
+    # Extract form fields and file
+    age = request.form.get('age')
+    sex = request.form.get('sex')
+    localization = request.form.get('localization')
+    file = request.files.get('SkinCondition')
+
     # Check if the request contains a file
     if 'SkinCondition' not in request.files:
         return "No file part in the request", 400
 
-    file = request.files['SkinCondition']
-    
     # If no file is selected, redirect to home or show an error
     if file.filename == '':
         return "No selected file", 400
@@ -41,9 +46,28 @@ def upload_image():
         filename = secure_filename(file.filename)
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
+
+        # data written into text/JSON file
+        data = {
+            'age': age,
+            'sex': sex,
+            'localization': localization,
+            'filename': filename
+        }
+
+        # Define a file path for the metadata file (e.g., filename with .json extension)
+        metadata_file_path = os.path.join(app.config['UPLOAD_FOLDER'], f"{filename}_metadata.json")
         
+        # Write metadata to the file
+        with open(metadata_file_path, 'w') as metadata_file:
+            json.dump(data, metadata_file)
+
+        # Build query string with additional form data
+        query_string = f'age={age}&sex={sex}&localization={localization}&filename={filename}'
+        
+
         # Redirect back to main page (can probably change this when we send info into api)
-        return redirect(url_for('index'))
+        return redirect(url_for('index') + '?' + query_string)
     else:
         return "File type not allowed", 400
 

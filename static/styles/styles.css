@@ -33,7 +33,6 @@ header {
     /* background-color: transparent; */
     color: white;
     padding: 20px;
-    text-align: center;
     height: 20px;
     background-repeat: no-repeat;
 }
@@ -61,6 +60,7 @@ section.feature-box.questions div{
 }
 div {
     /* background: black; */
+    position: relative;
     margin: auto;
     width: 100px;
 }
@@ -108,6 +108,6 @@ footer {
     transform: translate(-50%, -50%); 
     color: white; 
     padding: 10px 20px; 
-    font-size: 40px; 
+    font-size: 20px; 
     text-align: center;
 }
